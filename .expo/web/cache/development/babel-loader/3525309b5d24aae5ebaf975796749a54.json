@@ -1,1 +1,23 @@
-{"ast":null,"code":"export default AppStyles = {\n  palette: {\n    textMainColor: '#1d3557',\n    textSecondColor: '#a8dadc',\n    backgroundMainColor: '#f1faee',\n    backgroundSecondColor: '#457b9d',\n    warningColor: '#e63946'\n  }\n};","map":{"version":3,"sources":["E:/Projects/CostPlanner/cost-planner-frontend/AppStyles.js"],"names":["AppStyles","palette","textMainColor","textSecondColor","backgroundMainColor","backgroundSecondColor","warningColor"],"mappings":"AAAA,eAAeA,SAAS,GAAG;AACzBC,EAAAA,OAAO,EAAE;AACPC,IAAAA,aAAa,EAAE,SADR;AAEPC,IAAAA,eAAe,EAAE,SAFV;AAGPC,IAAAA,mBAAmB,EAAE,SAHd;AAIPC,IAAAA,qBAAqB,EAAE,SAJhB;AAKPC,IAAAA,YAAY,EAAE;AALP;AADgB,CAA3B","sourcesContent":["export default AppStyles = {\r\n  palette: {\r\n    textMainColor: '#1d3557',\r\n    textSecondColor: '#a8dadc',\r\n    backgroundMainColor: '#f1faee',\r\n    backgroundSecondColor: '#457b9d',\r\n    warningColor: '#e63946'\r\n  }\r\n};\r\n"]},"metadata":{},"sourceType":"module"}
+{
+  "ast": null,
+  "code": "export default AppStyles = {\n  palette: {\n    prussianBlue: '#1d3557',\n    textSecondColor: '#a8dadc',\n    backgroundMainColor: '#f1faee',\n    backgroundSecondColor: '#457b9d',\n    warningColor: '#e63946'\n  }\n};",
+  "map": {
+    "version": 3,
+    "sources": ["E:/Projects/CostPlanner/cost-planner-frontend/AppStyles.js"],
+    "names": [
+      "AppStyles",
+      "palette",
+      "prussianBlue",
+      "textSecondColor",
+      "backgroundMainColor",
+      "backgroundSecondColor",
+      "warningColor"
+    ],
+    "mappings": "AAAA,eAAeA,SAAS,GAAG;AACzBC,EAAAA,OAAO,EAAE;AACPC,IAAAA,aAAa,EAAE,SADR;AAEPC,IAAAA,eAAe,EAAE,SAFV;AAGPC,IAAAA,mBAAmB,EAAE,SAHd;AAIPC,IAAAA,qBAAqB,EAAE,SAJhB;AAKPC,IAAAA,YAAY,EAAE;AALP;AADgB,CAA3B",
+    "sourcesContent": [
+      "export default AppStyles = {\r\n  palette: {\r\n    prussianBlue: '#1d3557',\r\n    textSecondColor: '#a8dadc',\r\n    backgroundMainColor: '#f1faee',\r\n    backgroundSecondColor: '#457b9d',\r\n    warningColor: '#e63946'\r\n  }\r\n};\r\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

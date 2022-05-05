@@ -2,10 +2,10 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
 import AppStyles from '../../AppStyles';
 
-const ActionButton = ({ onPress, text }) => {
+const ActionButton = ({ onPress, text, style }) => {
   return (
     <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
-      <Text style={styles.button}>{text}</Text>
+      <Text style={{ ...styles.button, ...style }}>{text}</Text>
     </TouchableOpacity>
   );
 };
@@ -25,9 +25,9 @@ const styles = StyleSheet.create({
     minWidth: '50%',
     paddingHorizontal: 20,
     paddingVertical: 5,
-    borderRadius: 5,
+    borderRadius: 8,
     textAlign: 'center',
-    color: AppStyles.palette.backgroundMainColor,
-    backgroundColor: AppStyles.palette.backgroundSecondColor
+    color: AppStyles.palette.honeydew,
+    backgroundColor: AppStyles.palette.celadonBlue
   }
 });

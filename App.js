@@ -3,9 +3,9 @@ import AppLoading from 'expo-app-loading';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 
-import LoginScreen from './screens/auth/LoginScreen';
-import RegisterScreen from './screens/auth/RegisterScreen';
 import { useRoute } from './router';
+
+import AppStyles from './AppStyles';
 
 export default function App() {
   const routing = useRoute(true);
@@ -25,6 +25,4 @@ export default function App() {
   return <NavigationContainer>{routing}</NavigationContainer>;
 }
 
-const styles = StyleSheet.create({
-  container: {}
-});
+const styles = StyleSheet.create({});

@@ -1,10 +1,10 @@
 export default AppStyles = {
   palette: {
-    textMainColor: '#1d3557',
-    textSecondColor: '#a8dadc',
-    backgroundMainColor: '#f1faee',
-    backgroundSecondColor: '#457b9d',
-    warningColor: '#e63946',
+    prussianBlue: '#1d3557',
+    powderBlue: '#a8dadc',
+    honeydew: '#f1faee',
+    celadonBlue: '#457b9d',
+    imperialRed: '#e63946',
     white: '#fff'
   }
 };
