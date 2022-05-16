@@ -8,25 +8,16 @@ import AppStyles from '../../AppStyles';
 
 const initValues = {
   email: '',
-  name: '',
   password: ''
 };
 
-const RegisterPage = ({ navigation }) => {
+const LoginPage = ({ navigation }) => {
   return (
     <Formik initialValues={initValues} onSubmit={values => console.log(values)}>
       {({ handleChange, handleBlur, handleSubmit, values }) => (
         <View style={styles.container}>
-          <Text style={styles.title}>Register</Text>
+          <Text style={styles.title}>Login</Text>
 
-          <Input
-            style={styles.input}
-            onChangeText={handleChange('name')}
-            value={values.name}
-            autoComplete={'name'}
-            title={'Name'}
-            placeholder='Enter your name'
-          />
           <Input
             style={styles.input}
             onChangeText={handleChange('email')}
@@ -50,12 +41,12 @@ const RegisterPage = ({ navigation }) => {
             onPress={handleSubmit}
           />
           <Text style={{ fontSize: 12 }}>
-            I have account,
+            I don't have an account,
             <Text
               style={{ color: AppStyles.palette.celadonBlue }}
-              onPress={() => navigation.navigate('Login')}>
+              onPress={() => navigation.navigate('Register')}>
               {' '}
-              Login
+              Register
             </Text>
           </Text>
         </View>
@@ -64,7 +55,7 @@ const RegisterPage = ({ navigation }) => {
   );
 };
 
-export default RegisterPage;
+export default LoginPage;
 
 const styles = StyleSheet.create({
   container: {
