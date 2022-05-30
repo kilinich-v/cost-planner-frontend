@@ -1,11 +1,26 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ActivityIndicator
+} from 'react-native';
 
 import AppStyles from '../../AppStyles';
 
-const ActionButton = ({ onPress, text, style }) => {
+const ActionButton = ({ onPress, text, style, isLoading }) => {
   return (
-    <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
-      <Text style={{ ...styles.button, ...style }}>{text}</Text>
+    <TouchableOpacity
+      activeOpacity={0.8}
+      onPress={onPress}
+      disabled={isLoading}>
+      {isLoading ? (
+        <View style={{ ...styles.button, ...style }}>
+          <ActivityIndicator size='small' color={AppStyles.palette.honeydew} />
+        </View>
+      ) : (
+        <Text style={{ ...styles.button, ...style }}>{text}</Text>
+      )}
     </TouchableOpacity>
   );
 };

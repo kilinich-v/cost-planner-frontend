@@ -1,54 +1,101 @@
+import { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Formik } from 'formik';
+import { Formik, ErrorMessage } from 'formik';
+import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 
 import Input from '../Input';
 import ActionButton from '../ActionButton';
+import schema from './validationSchema';
+import { useRegisterUserMutation } from '../../store/user/userSlice';
 
 import AppStyles from '../../AppStyles';
 
 const initValues = {
-  email: '',
-  name: '',
-  password: ''
+  email: 'mail@mail.com',
+  name: 'Molekula',
+  password: '11111111'
 };
 
 const RegisterPage = ({ navigation }) => {
+  const { setItem } = useAsyncStorage('@api_key');
+
+  const [registerUser, { isSuccess, isLoading, error, data }] =
+    useRegisterUserMutation();
+
+  const handleSubmit = async values => {
+    try {
+      await registerUser(values).unwrap();
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  useEffect(async () => {
+    if (data?.token) await setItem(data.user.token);
+  }, [data]);
+
   return (
-    <Formik initialValues={initValues} onSubmit={values => console.log(values)}>
-      {({ handleChange, handleBlur, handleSubmit, values }) => (
+    <Formik
+      initialValues={initValues}
+      onSubmit={handleSubmit}
+      validationSchema={schema}>
+      {({ handleChange, handleSubmit, values }) => (
         <View style={styles.container}>
           <Text style={styles.title}>Register</Text>
 
-          <Input
-            style={styles.input}
-            onChangeText={handleChange('name')}
-            value={values.name}
-            autoComplete={'name'}
-            title={'Name'}
-            placeholder='Enter your name'
-          />
-          <Input
-            style={styles.input}
-            onChangeText={handleChange('email')}
-            value={values.email}
-            autoComplete={'email'}
-            title={'Email'}
-            placeholder='Enter email'
-          />
-          <Input
-            style={styles.input}
-            onChangeText={handleChange('password')}
-            value={values.password}
-            title={'Password'}
-            secureTextEntry={true}
-            placeholder='Enter password'
-          />
+          <View style={styles.inputWrapper}>
+            <Input
+              style={styles.input}
+              onChangeText={handleChange('name')}
+              value={values.name}
+              autoComplete={'name'}
+              title={'Name'}
+              placeholder='Enter your name'
+            />
+            <ErrorMessage name='name'>
+              {msg => <Text style={styles.errorText}>{msg}</Text>}
+            </ErrorMessage>
+          </View>
+
+          <View style={styles.inputWrapper}>
+            <Input
+              style={styles.input}
+              onChangeText={handleChange('email')}
+              value={values.email}
+              autoComplete={'email'}
+              title={'Email'}
+              placeholder='Enter email'
+            />
+            <ErrorMessage name='email'>
+              {msg => <Text style={styles.errorText}>{msg}</Text>}
+            </ErrorMessage>
+          </View>
+
+          <View style={styles.inputWrapper}>
+            <Input
+              style={styles.input}
+              onChangeText={handleChange('password')}
+              value={values.password}
+              title={'Password'}
+              secureTextEntry={true}
+              placeholder='Enter password'
+            />
+            <ErrorMessage name='password'>
+              {msg => <Text style={styles.errorText}>{msg}</Text>}
+            </ErrorMessage>
+          </View>
 
           <ActionButton
             style={styles.button}
             text={'Register'}
             onPress={handleSubmit}
+            isLoading={isLoading}
           />
+          {error?.data?.error && (
+            <View>
+              <Text style={styles.errorText}>{error.data.error}</Text>
+            </View>
+          )}
           <Text style={{ fontSize: 12 }}>
             I have account,
             <Text
@@ -83,5 +130,12 @@ const styles = StyleSheet.create({
   },
   input: {
     marginTop: 10
+  },
+  inputWrapper: {
+    width: '50%'
+  },
+  errorText: {
+    color: AppStyles.palette.imperialRed,
+    fontSize: 8
   }
 });

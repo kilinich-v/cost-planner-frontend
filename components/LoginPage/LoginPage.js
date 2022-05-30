@@ -1,20 +1,41 @@
+import { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Formik } from 'formik';
+import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 
 import Input from '../Input';
 import ActionButton from '../ActionButton';
+import { useLoginUserMutation } from '../../store/user/userSlice';
 
 import AppStyles from '../../AppStyles';
 
 const initValues = {
-  email: '',
-  password: ''
+  email: 'mail@mail.com',
+  password: '11111111'
 };
 
 const LoginPage = ({ navigation }) => {
+  const { setItem } = useAsyncStorage('@api_key');
+
+  const [loginUser, { isLoading, error, data }] = useLoginUserMutation();
+
+  const handleSubmit = async values => {
+    try {
+      await loginUser(values).unwrap();
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  useEffect(async () => {
+    if (data?.token) {
+      await setItem(data.token);
+    }
+  }, [data]);
+
   return (
-    <Formik initialValues={initValues} onSubmit={values => console.log(values)}>
-      {({ handleChange, handleBlur, handleSubmit, values }) => (
+    <Formik initialValues={initValues} onSubmit={handleSubmit}>
+      {({ handleChange, handleSubmit, values }) => (
         <View style={styles.container}>
           <Text style={styles.title}>Login</Text>
 
@@ -37,9 +58,15 @@ const LoginPage = ({ navigation }) => {
 
           <ActionButton
             style={styles.button}
-            text={'Register'}
+            text={'Login'}
             onPress={handleSubmit}
+            isLoading={isLoading}
           />
+          {error?.data?.error && (
+            <View>
+              <Text style={styles.errorText}>{error.data.error}</Text>
+            </View>
+          )}
           <Text style={{ fontSize: 12 }}>
             I don't have an account,
             <Text
@@ -74,5 +101,9 @@ const styles = StyleSheet.create({
   },
   input: {
     marginTop: 10
+  },
+  errorText: {
+    color: AppStyles.palette.imperialRed,
+    fontSize: 8
   }
 });
