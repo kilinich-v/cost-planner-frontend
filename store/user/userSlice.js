@@ -3,7 +3,7 @@ import { createEntityAdapter } from '@reduxjs/toolkit';
 
 export const userSlice = createApi({
   reducerPath: 'user',
-  baseQuery: fetchBaseQuery({ baseUrl: `http://192.168.0.102:8080/user` }),
+  baseQuery: fetchBaseQuery({ baseUrl: `http://192.168.0.104:8080/user` }),
   tagTypes: ['User'],
   endpoints: builder => ({
     currentUser: builder.mutation({
@@ -22,7 +22,7 @@ export const userSlice = createApi({
         method: 'POST',
         body: user
       }),
-      providesTags: 'Users'
+      providesTags: 'User'
     }),
     loginUser: builder.mutation({
       query: user => ({
@@ -30,7 +30,7 @@ export const userSlice = createApi({
         method: 'POST',
         body: user
       }),
-      providesTags: 'Users'
+      providesTags: 'User'
     }),
     logoutUser: builder.mutation({
       query: ({ id, key }) => ({
@@ -41,7 +41,7 @@ export const userSlice = createApi({
           ['Authorization']: `Bearer ${key}`
         }
       }),
-      providesTags: 'Users'
+      providesTags: 'User'
     })
   })
 });

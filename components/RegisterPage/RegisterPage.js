@@ -7,6 +7,7 @@ import Input from '../Input';
 import ActionButton from '../ActionButton';
 import schema from './validationSchema';
 import { useRegisterUserMutation } from '../../store/user/userSlice';
+import { useApiToken } from '../../hooks';
 
 import AppStyles from '../../AppStyles';
 
@@ -17,7 +18,7 @@ const initValues = {
 };
 
 const RegisterPage = ({ navigation }) => {
-  const { setItem } = useAsyncStorage('@api_key');
+  const [token, setToken] = useApiToken();
 
   const [registerUser, { isSuccess, isLoading, error, data }] =
     useRegisterUserMutation();
@@ -31,7 +32,9 @@ const RegisterPage = ({ navigation }) => {
   };
 
   useEffect(async () => {
-    if (data?.token) await setItem(data.user.token);
+    if (data?.token) {
+      setToken(data.user.token);
+    }
   }, [data]);
 
   return (

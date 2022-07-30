@@ -6,6 +6,7 @@ import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 import Input from '../Input';
 import ActionButton from '../ActionButton';
 import { useLoginUserMutation } from '../../store/user/userSlice';
+import { useApiToken } from '../../hooks';
 
 import AppStyles from '../../AppStyles';
 
@@ -15,7 +16,7 @@ const initValues = {
 };
 
 const LoginPage = ({ navigation }) => {
-  const { setItem } = useAsyncStorage('@api_key');
+  const [token, setToken] = useApiToken();
 
   const [loginUser, { isLoading, error, data }] = useLoginUserMutation();
 
@@ -29,7 +30,7 @@ const LoginPage = ({ navigation }) => {
 
   useEffect(async () => {
     if (data?.token) {
-      await setItem(data.token);
+      setToken(data.token);
     }
   }, [data]);
 
