@@ -11,9 +11,9 @@ const NotesPage = ({ navigation, notes, resources }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [currentNoteType, setCurrentNoteType] = useState(null);
 
-  const handleBottons = e => {
+  const handleBottons = noteType => {
     setModalVisible(true);
-    setCurrentNoteType();
+    setCurrentNoteType(noteType);
   };
 
   const handleScreen = () => {
@@ -23,51 +23,54 @@ const NotesPage = ({ navigation, notes, resources }) => {
   return (
     <View style={styles.container}>
       <View style={styles.notesList}>
-        {notes.map(
-          ({ date_create, noteType, noteSection, money, currency, id }) => (
-            <View style={styles.noteItem} key={id}>
-              <View>
-                <Text
-                  style={{
-                    ...styles.text,
-                    textTransform: 'uppercase',
-                    color:
-                      noteType === 'income'
-                        ? AppStyles.palette.celadonBlue
-                        : AppStyles.palette.imperialRed
-                  }}>
-                  {noteSection}
-                </Text>
-                <Text
-                  style={{
-                    ...styles.text,
-                    fontSize: 10
-                  }}>
-                  {format(date_create, 'dd.MM.yyyy hh:mm')}
-                </Text>
-              </View>
-              <Text
-                style={{
-                  ...styles.text,
-                  textTransform: 'uppercase',
-                  fontSize: 20
-                }}>{`${money} ${currency}`}</Text>
-            </View>
-          )
-        )}
+        {notes?.length
+          ? notes.map(
+              ({ date_create, noteType, noteSection, money, currency, id }) => (
+                <View style={styles.noteItem} key={`note-${id}`}>
+                  <View>
+                    <Text
+                      style={{
+                        ...styles.text,
+                        textTransform: 'uppercase',
+                        color:
+                          noteType === 'income'
+                            ? AppStyles.palette.celadonBlue
+                            : AppStyles.palette.imperialRed
+                      }}>
+                      {noteSection}
+                    </Text>
+                    <Text
+                      style={{
+                        ...styles.text,
+                        fontSize: 10
+                      }}>
+                      {format(date_create, 'dd.MM.yyyy hh:mm')}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      ...styles.text,
+                      textTransform: 'uppercase',
+                      fontSize: 20
+                    }}>{`${money} ${currency}`}</Text>
+                </View>
+              )
+            )
+          : null}
       </View>
       <View style={styles.buttonsWrapper}>
         <ActionButton
           style={styles.button}
           text={'-'}
-          onPress={handleBottons}
+          onPress={() => handleBottons(0)}
         />
         <ActionButton
           style={styles.button}
           text={'+'}
-          onPress={handleBottons}
+          onPress={() => handleBottons(1)}
         />
         <NoteModal
+          noteType={currentNoteType}
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
           resources={resources}

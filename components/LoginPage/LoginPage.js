@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Formik } from 'formik';
-import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 
 import Input from '../Input';
 import ActionButton from '../ActionButton';
@@ -24,7 +23,7 @@ const LoginPage = ({ navigation }) => {
     try {
       await loginUser(values).unwrap();
     } catch (error) {
-      console.log(error.message);
+      alert(error.data.message);
     }
   };
 

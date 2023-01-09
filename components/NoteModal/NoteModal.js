@@ -1,65 +1,110 @@
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Modal } from 'react-native';
+import { View, Text, StyleSheet, Modal, TextInput } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
+import { Formik, ErrorMessage } from 'formik';
+import { useSelector } from 'react-redux';
 
 import Select from '../Select';
 import AppStyles from '../../AppStyles';
+import { useCurrentUserMutation } from '../../store/user/userSlice';
+
+import schema from './validationSchema';
 
 const NoteModal = ({
   navigation,
   modalVisible,
   setModalVisible,
-  resources
+  resources,
+  noteType
 }) => {
-  const [noteTypes, setNoteTypes] = useState(
-    Object.values(resources.note_types)
-  );
+  const [initValues, setInitValues] = useState({
+    owner: '',
+    note_type: '',
+    note_section: '',
+    money: 0,
+    currency: ''
+  });
+
+  const user = useSelector(state => state.user);
+
   const [noteSections, setNoteSections] = useState(
     Object.values(resources.note_sections).filter(
-      ({ id, note_type }) => note_type == 0
+      ({ id, note_type }) => note_type == noteType
     )
-  );
-
-  const [currentNoteType, setCurrentNoteType] = useState(noteTypes[1].id);
-  const [currentNoteSection, setCurrentNoteSection] = useState(
-    noteSections.find(section => section === currentNoteType.id)
   );
 
   useEffect(() => {
     setNoteSections(
       Object.values(resources.note_sections).filter(
-        ({ id, note_type }) => note_type === currentNoteType
+        ({ id, note_type }) => note_type == noteType
       )
     );
-  }, [currentNoteType]);
+
+    setInitValues(prev => ({
+      ...prev,
+      note_type: noteType,
+      note_section: noteSections.find(section => section.note_type == noteType)
+    }));
+  }, [noteType]);
+
+  const handleSubmit = async () => {};
+
   return (
     <View style={styles.container}>
       <Modal animationType='slide' transparent={true} visible={modalVisible}>
-        <View style={styles.modal}>
-          <View>
-            <Select
-              items={noteTypes}
-              setValue={setCurrentNoteType}
-              currentItem={currentNoteType}
-              selectName={'note_types'}
-            />
-            <Select
-              items={noteSections}
-              currentItem={currentNoteSection}
-              setValue={setCurrentNoteSection}
-              selectName={'note_sections'}
-            />
-          </View>
+        <Formik
+          initialValues={initValues}
+          onSubmit={handleSubmit}
+          validationSchema={schema}>
+          {({ handleChange, handleSubmit, values, setFieldValue }) => (
+            <View style={styles.modal}>
+              <View>
+                <Select
+                  items={noteSections}
+                  currentItem={values.note_section}
+                  setValue={value => setFieldValue('note_section', value)}
+                  selectName={'note_sections'}
+                />
+              </View>
+              <View>
+                <View style={styles.input}>
+                  <TextInput
+                    onChangeText={value =>
+                      setFieldValue('money', Number(value))
+                    }
+                    value={String(values.money)}
+                  />
+                </View>
+                <View style={styles.input}>
+                  <Picker
+                    selectedValue={values.currency}
+                    onValueChange={(itemValue, itemIndex) =>
+                      setFieldValue('currency', itemValue)
+                    }>
+                    {Object.values(resources.currency).map(
+                      ({ code, symbol, name }) => (
+                        <Picker.Item
+                          key={code}
+                          label={`${symbol} (${name})`}
+                          value={code}
+                        />
+                      )
+                    )}
+                  </Picker>
+                </View>
+              </View>
 
-          <AntDesign
-            onPress={() => setModalVisible(false)}
-            name='arrowleft'
-            size={24}
-            color='black'
-            style={styles.arrow}
-          />
-        </View>
+              <AntDesign
+                onPress={() => setModalVisible(false)}
+                name='arrowleft'
+                size={24}
+                color='black'
+                style={styles.arrow}
+              />
+            </View>
+          )}
+        </Formik>
       </Modal>
     </View>
   );
@@ -95,6 +140,13 @@ const styles = StyleSheet.create({
     borderColor: AppStyles.palette.powderBlue,
     borderRadius: 20,
     paddingHorizontal: 5
+  },
+  input: {
+    margin: 12,
+    padding: 10,
+    height: 40,
+    borderBottomWidth: 1,
+    borderBottomColor: AppStyles.palette.powderBlue
   }
 });
 

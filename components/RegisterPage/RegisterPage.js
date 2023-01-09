@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import { Formik, ErrorMessage } from 'formik';
-import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 
 import Input from '../Input';
 import ActionButton from '../ActionButton';
@@ -27,13 +26,17 @@ const RegisterPage = ({ navigation }) => {
     try {
       await registerUser(values).unwrap();
     } catch (error) {
-      console.log(error.message);
+      alert(error.message);
     }
   };
 
   useEffect(async () => {
-    if (data?.token) {
+    if (data?.user?.token) {
       setToken(data.user.token);
+
+      Alert.alert('Success!', 'User is registered');
+
+      navigation.navigate('Login');
     }
   }, [data]);
 

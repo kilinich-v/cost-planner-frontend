@@ -3,7 +3,7 @@ import { createEntityAdapter } from '@reduxjs/toolkit';
 
 export const userSlice = createApi({
   reducerPath: 'user',
-  baseQuery: fetchBaseQuery({ baseUrl: `http://192.168.0.104:8080/user` }),
+  baseQuery: fetchBaseQuery({ baseUrl: `http://192.168.0.105:8080/user` }),
   tagTypes: ['User'],
   endpoints: builder => ({
     currentUser: builder.mutation({
@@ -14,6 +14,8 @@ export const userSlice = createApi({
           ['Authorization']: `Bearer ${key}`
         }
       }),
+      transformResponse: (response, meta, arg) => response.data,
+      transformErrorResponse: (response, meta, arg) => response.data,
       invalidatesTags: 'User'
     }),
     registerUser: builder.mutation({
@@ -22,6 +24,8 @@ export const userSlice = createApi({
         method: 'POST',
         body: user
       }),
+      transformResponse: (response, meta, arg) => response.data,
+      transformErrorResponse: (response, meta, arg) => response.data,
       providesTags: 'User'
     }),
     loginUser: builder.mutation({
@@ -30,6 +34,8 @@ export const userSlice = createApi({
         method: 'POST',
         body: user
       }),
+      transformResponse: (response, meta, arg) => response.data,
+      transformErrorResponse: (response, meta, arg) => response.data,
       providesTags: 'User'
     }),
     logoutUser: builder.mutation({
@@ -41,6 +47,8 @@ export const userSlice = createApi({
           ['Authorization']: `Bearer ${key}`
         }
       }),
+      transformResponse: (response, meta, arg) => response.data,
+      transformErrorResponse: (response, meta, arg) => response.data,
       providesTags: 'User'
     })
   })

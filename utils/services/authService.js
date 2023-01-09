@@ -17,7 +17,7 @@ class AuthService {
   async register(user) {
     try {
       const res = await servicesConfig.post(this.path.register, user);
-      console.log(res);
+
       return res.data;
     } catch (error) {
       handleServerRequestError(error);

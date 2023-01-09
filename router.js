@@ -18,7 +18,7 @@ const Stack = createNativeStackNavigator();
 const Router = () => {
   const [token, setToken] = useApiToken();
 
-  const [currentUser, { isLoading, isSuccess, isError, error }] =
+  const [currentUser, { isLoading, isSuccess, isError, error, data }] =
     useCurrentUserMutation();
 
   useEffect(async () => {
@@ -29,7 +29,7 @@ const Router = () => {
         setToken('');
       }
     }
-  }, []);
+  }, [token]);
 
   if (isLoading) {
     return (
@@ -43,7 +43,7 @@ const Router = () => {
 
   return (
     <Stack.Navigator>
-      {!isLoading && token ? (
+      {token ? (
         <>
           <Stack.Group navigationKey={'user'}>
             <Stack.Screen

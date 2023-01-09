@@ -40,7 +40,7 @@ const NotesScreen = ({ navigation }) => {
   return (
     <NotesPage
       resources={resources.data}
-      notes={notes.data}
+      notes={notes?.data}
       navigation={navigation}
     />
   );
