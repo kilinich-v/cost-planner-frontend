@@ -1,20 +1,21 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import { userSlice } from './user/userSlice';
-import { resourcesSlice } from './resources/resourcesSlice';
-import { notesSlice } from './notes/notesSlice';
+import { userAPI } from './user/userAPI';
+import { resourcesAPI } from './resources/resourcesAPI';
+import { notesAPI } from './notes/notesAPI';
+import userReducer from './user/userSlice';
 
-const store = configureStore({
+export const store = configureStore({
   reducer: {
-    [userSlice.reducerPath]: userSlice.reducer,
-    [resourcesSlice.reducerPath]: resourcesSlice.reducer,
-    [notesSlice.reducerPath]: notesSlice.reducer
+    [userAPI.reducerPath]: userAPI.reducer,
+    [resourcesAPI.reducerPath]: resourcesAPI.reducer,
+    [notesAPI.reducerPath]: notesAPI.reducer,
+    userState: userReducer
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware().concat(
-      userSlice.middleware,
-      resourcesSlice.middleware,
-      notesSlice.middleware
+      userAPI.middleware,
+      resourcesAPI.middleware,
+      notesAPI.middleware
     )
 });
-export default store;

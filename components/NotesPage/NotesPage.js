@@ -25,7 +25,14 @@ const NotesPage = ({ navigation, notes, resources }) => {
       <View style={styles.notesList}>
         {notes?.length
           ? notes.map(
-              ({ date_create, noteType, noteSection, money, currency, id }) => (
+              ({
+                date_create,
+                note_type,
+                note_section,
+                money,
+                currency,
+                id
+              }) => (
                 <View style={styles.noteItem} key={`note-${id}`}>
                   <View>
                     <Text
@@ -33,18 +40,18 @@ const NotesPage = ({ navigation, notes, resources }) => {
                         ...styles.text,
                         textTransform: 'uppercase',
                         color:
-                          noteType === 'income'
+                          note_type == 2
                             ? AppStyles.palette.celadonBlue
                             : AppStyles.palette.imperialRed
                       }}>
-                      {noteSection}
+                      {resources.note_sections[note_section].name}
                     </Text>
                     <Text
                       style={{
                         ...styles.text,
                         fontSize: 10
                       }}>
-                      {format(date_create, 'dd.MM.yyyy hh:mm')}
+                      {format(date_create, 'dd.MM.yyyy HH:mm')}
                     </Text>
                   </View>
                   <Text
@@ -62,12 +69,12 @@ const NotesPage = ({ navigation, notes, resources }) => {
         <ActionButton
           style={styles.button}
           text={'-'}
-          onPress={() => handleBottons(0)}
+          onPress={() => handleBottons(1)}
         />
         <ActionButton
           style={styles.button}
           text={'+'}
-          onPress={() => handleBottons(1)}
+          onPress={() => handleBottons(2)}
         />
         <NoteModal
           noteType={currentNoteType}

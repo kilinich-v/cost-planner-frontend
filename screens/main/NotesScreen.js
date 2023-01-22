@@ -2,8 +2,8 @@ import { StyleSheet, ActivityIndicator } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import NotesPage from '../../components/NotesPage';
-import { useGetResourcesForNotesQuery } from '../../store/resources/resourcesSlice';
-import { useGetNotesQuery } from '../../store/notes/notesSlice';
+import { useGetResourcesForNotesQuery } from '../../store/resources/resourcesAPI';
+import { useGetNotesQuery } from '../../store/notes/notesAPI';
 import { useApiToken } from '../../hooks';
 
 import AppStyles from '../../AppStyles';
@@ -25,7 +25,7 @@ const NotesScreen = ({ navigation }) => {
     isSuccess: isSuccessNotes,
     isError: isErrorNotes,
     error: errorNotes
-  } = useGetNotesQuery(token);
+  } = useGetNotesQuery(token, { refetchOnFocus: true });
 
   if (isLoadingResources || isLoadingNotes) {
     return (

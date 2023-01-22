@@ -1,25 +1,33 @@
 import { useState, useEffect } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useAsyncStorage } from '@react-native-async-storage/async-storage';
+import { useSelector } from 'react-redux';
 import { ActivityIndicator } from 'react-native';
 
 import LoginScreen from './screens/auth/LoginScreen';
 import RegisterScreen from './screens/auth/RegisterScreen';
 import NotesScreen from './screens/main/NotesScreen';
-import NoteModal from './components/NoteModal';
 
 import AppStyles from './AppStyles';
-import { useCurrentUserMutation } from './store/user/userSlice';
+import { useCurrentUserMutation } from './store/user/userAPI';
 import { useApiToken } from './hooks';
 
 const Stack = createNativeStackNavigator();
 
 const Router = () => {
+  const currentToken = useSelector(state => state.userState.token);
+  const user = useSelector(state => state.userState.user);
+
   const [token, setToken] = useApiToken();
 
   const [currentUser, { isLoading, isSuccess, isError, error, data }] =
     useCurrentUserMutation();
+
+  useEffect(async () => {
+    if (currentToken && !user) {
+      setToken(currentToken);
+    }
+  }, [currentToken]);
 
   useEffect(async () => {
     if (token) {

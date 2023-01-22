@@ -5,7 +5,7 @@ import { Formik, ErrorMessage } from 'formik';
 import Input from '../Input';
 import ActionButton from '../ActionButton';
 import schema from './validationSchema';
-import { useRegisterUserMutation } from '../../store/user/userSlice';
+import { useRegisterUserMutation } from '../../store/user/userAPI';
 import { useApiToken } from '../../hooks';
 
 import AppStyles from '../../AppStyles';

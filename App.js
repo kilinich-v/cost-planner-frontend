@@ -5,7 +5,7 @@ import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 
 import Router from './Router';
-import store from './store/store';
+import { store } from './store/store';
 
 import AppStyles from './AppStyles';
 

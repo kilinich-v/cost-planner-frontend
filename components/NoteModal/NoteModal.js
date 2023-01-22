@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Modal, TextInput } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
-import { Formik, ErrorMessage } from 'formik';
+import { Formik, Form, ErrorMessage } from 'formik';
 import { useSelector } from 'react-redux';
 
+import ActionButton from '../ActionButton';
 import Select from '../Select';
 import AppStyles from '../../AppStyles';
-import { useCurrentUserMutation } from '../../store/user/userSlice';
+import { useAddNoteMutation } from '../../store/notes/notesAPI';
 
 import schema from './validationSchema';
 
@@ -18,21 +19,39 @@ const NoteModal = ({
   resources,
   noteType
 }) => {
-  const [initValues, setInitValues] = useState({
-    owner: '',
-    note_type: '',
-    note_section: '',
-    money: 0,
-    currency: ''
-  });
+  const user = useSelector(state => state.userState.user);
 
-  const user = useSelector(state => state.user);
+  const [addNote, { isLoading, error, data: newNote }] = useAddNoteMutation();
+
+  const normalizeMoneyValue = value => {
+    let normalizedValue;
+    normalizedValue = value.replace(/[^0-9]/g, '');
+
+    return normalizedValue;
+  };
 
   const [noteSections, setNoteSections] = useState(
     Object.values(resources.note_sections).filter(
       ({ id, note_type }) => note_type == noteType
     )
   );
+  const [initValues, setInitValues] = useState({
+    owner: user?.id || '',
+    note_type: noteType,
+    note_section: '',
+    money: 0,
+    currency: Object.values(resources.currency)[0].code
+  });
+
+  const handleSubmit = async values => {
+    console.log(values);
+    try {
+      const res = await addNote({ token: user.token, note: values }).unwrap();
+      console.log(res);
+    } catch (error) {
+      alert(error.error);
+    }
+  };
 
   useEffect(() => {
     setNoteSections(
@@ -43,12 +62,25 @@ const NoteModal = ({
 
     setInitValues(prev => ({
       ...prev,
-      note_type: noteType,
-      note_section: noteSections.find(section => section.note_type == noteType)
+      note_type: noteType
     }));
   }, [noteType]);
 
-  const handleSubmit = async () => {};
+  useEffect(() => {
+    setInitValues(prev => ({
+      ...prev,
+      note_section: noteSections?.[0]?.id
+    }));
+  }, [noteSections]);
+
+  useEffect(() => {
+    if (user) {
+      setInitValues(prev => ({
+        ...prev,
+        owner: user.id
+      }));
+    }
+  }, [user]);
 
   return (
     <View style={styles.container}>
@@ -57,53 +89,68 @@ const NoteModal = ({
           initialValues={initValues}
           onSubmit={handleSubmit}
           validationSchema={schema}>
-          {({ handleChange, handleSubmit, values, setFieldValue }) => (
-            <View style={styles.modal}>
-              <View>
-                <Select
-                  items={noteSections}
-                  currentItem={values.note_section}
-                  setValue={value => setFieldValue('note_section', value)}
-                  selectName={'note_sections'}
-                />
-              </View>
-              <View>
-                <View style={styles.input}>
-                  <TextInput
-                    onChangeText={value =>
-                      setFieldValue('money', Number(value))
-                    }
-                    value={String(values.money)}
+          {({
+            handleChange,
+            handleSubmit,
+            values,
+            setFieldValue,
+            isSubmitting,
+            ...rest
+          }) => {
+            return (
+              <View style={styles.modal}>
+                <View>
+                  <Select
+                    items={noteSections}
+                    currentItem={values.note_section}
+                    setValue={value => setFieldValue('note_section', value)}
+                    selectName={'note_sections'}
                   />
                 </View>
-                <View style={styles.input}>
-                  <Picker
-                    selectedValue={values.currency}
-                    onValueChange={(itemValue, itemIndex) =>
-                      setFieldValue('currency', itemValue)
-                    }>
-                    {Object.values(resources.currency).map(
-                      ({ code, symbol, name }) => (
-                        <Picker.Item
-                          key={code}
-                          label={`${symbol} (${name})`}
-                          value={code}
-                        />
-                      )
-                    )}
-                  </Picker>
+                <View>
+                  <View style={styles.input}>
+                    <TextInput
+                      keyboardType='numeric'
+                      onChangeText={value =>
+                        setFieldValue('money', normalizeMoneyValue(value))
+                      }
+                      value={String(values.money)}
+                    />
+                  </View>
+                  <View style={styles.input}>
+                    <Picker
+                      selectedValue={values.currency}
+                      onValueChange={(itemValue, itemIndex) =>
+                        setFieldValue('currency', itemValue)
+                      }>
+                      {Object.values(resources.currency).map(
+                        ({ code, symbol, name }) => (
+                          <Picker.Item
+                            key={code}
+                            label={`${symbol} (${name})`}
+                            value={code}
+                          />
+                        )
+                      )}
+                    </Picker>
+                  </View>
+                  <ActionButton
+                    text={'Save'}
+                    onPress={() => handleSubmit(values)}
+                    isLoading={isSubmitting}
+                  />
                 </View>
-              </View>
 
-              <AntDesign
-                onPress={() => setModalVisible(false)}
-                name='arrowleft'
-                size={24}
-                color='black'
-                style={styles.arrow}
-              />
-            </View>
-          )}
+                <AntDesign
+                  onPress={() => setModalVisible(false)}
+                  name='arrowleft'
+                  size={24}
+                  color='black'
+                  style={styles.arrow}
+                />
+              </View>
+            );
+          }}
         </Formik>
       </Modal>
     </View>

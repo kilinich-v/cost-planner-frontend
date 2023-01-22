@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-export const notesSlice = createApi({
+export const notesAPI = createApi({
   reducerPath: 'notes',
-  baseQuery: fetchBaseQuery({ baseUrl: `http://192.168.0.105:8080/notes` }),
+  baseQuery: fetchBaseQuery({ baseUrl: `http://192.168.0.101:8080/notes` }),
 
   endpoints: builder => ({
     getNotes: builder.query({
@@ -14,7 +14,7 @@ export const notesSlice = createApi({
       })
     }),
     addNote: builder.mutation({
-      query: (token, note) => ({
+      query: ({ token, note }) => ({
         url: '/add_note',
         method: 'POST',
         body: note,
@@ -26,4 +26,4 @@ export const notesSlice = createApi({
   })
 });
 
-export const { useGetNotesQuery, useAddNoteMutation } = notesSlice;
+export const { useGetNotesQuery, useAddNoteMutation } = notesAPI;

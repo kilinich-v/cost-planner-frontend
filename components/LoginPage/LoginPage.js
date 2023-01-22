@@ -4,14 +4,14 @@ import { Formik } from 'formik';
 
 import Input from '../Input';
 import ActionButton from '../ActionButton';
-import { useLoginUserMutation } from '../../store/user/userSlice';
+import { useLoginUserMutation } from '../../store/user/userAPI';
 import { useApiToken } from '../../hooks';
 
 import AppStyles from '../../AppStyles';
 
 const initValues = {
-  email: 'mail@mail.com',
-  password: '11111111'
+  email: 'mail1@mail.com',
+  password: '123123123'
 };
 
 const LoginPage = ({ navigation }) => {

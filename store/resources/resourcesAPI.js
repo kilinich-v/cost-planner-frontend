@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-export const resourcesSlice = createApi({
+export const resourcesAPI = createApi({
   reducerPath: 'resources',
-  baseQuery: fetchBaseQuery({ baseUrl: `http://192.168.0.105:8080/resources` }),
+  baseQuery: fetchBaseQuery({ baseUrl: `http://192.168.0.101:8080/resources` }),
 
   endpoints: builder => ({
     getResourcesForNotes: builder.query({
@@ -13,4 +13,4 @@ export const resourcesSlice = createApi({
   })
 });
 
-export const { useGetResourcesForNotesQuery } = resourcesSlice;
+export const { useGetResourcesForNotesQuery } = resourcesAPI;
