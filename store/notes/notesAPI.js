@@ -2,8 +2,8 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const notesAPI = createApi({
   reducerPath: 'notes',
-  baseQuery: fetchBaseQuery({ baseUrl: `http://192.168.0.101:8080/notes` }),
-
+  baseQuery: fetchBaseQuery({ baseUrl: `http://192.168.0.103:8080/notes` }),
+  refetchOnFocus: true,
   endpoints: builder => ({
     getNotes: builder.query({
       query: token => ({

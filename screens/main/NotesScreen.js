@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import NotesPage from '../../components/NotesPage';
 import { useGetResourcesForNotesQuery } from '../../store/resources/resourcesAPI';
 import { useGetNotesQuery } from '../../store/notes/notesAPI';
-import { useApiToken } from '../../hooks';
+import { useApiToken, useRefetchOnFocus } from '../../hooks';
 
 import AppStyles from '../../AppStyles';
 
@@ -24,8 +24,9 @@ const NotesScreen = ({ navigation }) => {
     isLoading: isLoadingNotes,
     isSuccess: isSuccessNotes,
     isError: isErrorNotes,
-    error: errorNotes
-  } = useGetNotesQuery(token, { refetchOnFocus: true });
+    error: errorNotes,
+    refetch
+  } = useGetNotesQuery(token);
 
   if (isLoadingResources || isLoadingNotes) {
     return (
@@ -41,6 +42,7 @@ const NotesScreen = ({ navigation }) => {
     <NotesPage
       resources={resources.data}
       notes={notes?.data}
+      refetchNotes={refetch}
       navigation={navigation}
     />
   );

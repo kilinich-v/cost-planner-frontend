@@ -9,6 +9,12 @@ import { store } from './store/store';
 
 import AppStyles from './AppStyles';
 
+// const loadApplication = async () => {
+//   await Font.loadAsync({
+//     'DMMono-Regular': require('./assets/fonts/DMMono-Regular.ttf')
+//   });
+// };
+
 export default function App() {
   const [isReady, setIsReady] = useState(false);
 

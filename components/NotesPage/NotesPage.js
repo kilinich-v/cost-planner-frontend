@@ -1,24 +1,35 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Modal } from 'react-native';
+import { useSelector } from 'react-redux';
 import { format } from 'date-fns';
 
 import NoteModal from '../NoteModal';
 import ActionButton from '../ActionButton';
 
+import { useRefetchOnFocus } from '../../hooks';
+
 import AppStyles from '../../AppStyles';
 
-const NotesPage = ({ navigation, notes, resources }) => {
+const NotesPage = ({ navigation, notes, refetchNotes, resources }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [currentNoteType, setCurrentNoteType] = useState(null);
 
+  useRefetchOnFocus(refetchNotes, modalVisible);
+
   const handleBottons = noteType => {
-    setModalVisible(true);
     setCurrentNoteType(noteType);
+    setModalVisible(true);
   };
 
   const handleScreen = () => {
     if (modalVisible) setModalVisible(false);
   };
+
+  useEffect(() => {
+    if (!modalVisible) {
+      setCurrentNoteType(null);
+    }
+  }, [modalVisible]);
 
   return (
     <View style={styles.container}>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Modal, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Modal, TextInput, Button } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import { Formik, Form, ErrorMessage } from 'formik';
@@ -21,6 +21,13 @@ const NoteModal = ({
 }) => {
   const user = useSelector(state => state.userState.user);
 
+  const initValues = {
+    owner: user?.id || '',
+    note_type: noteType,
+    note_section: 0,
+    money: 0,
+    currency: Object.values(resources.currency)[0].code
+  };
   const [addNote, { isLoading, error, data: newNote }] = useAddNoteMutation();
 
   const normalizeMoneyValue = value => {
@@ -35,19 +42,15 @@ const NoteModal = ({
       ({ id, note_type }) => note_type == noteType
     )
   );
-  const [initValues, setInitValues] = useState({
-    owner: user?.id || '',
-    note_type: noteType,
-    note_section: '',
-    money: 0,
-    currency: Object.values(resources.currency)[0].code
-  });
 
   const handleSubmit = async values => {
     console.log(values);
     try {
       const res = await addNote({ token: user.token, note: values }).unwrap();
-      console.log(res);
+
+      if (res.status === 'success') {
+        setModalVisible(false);
+      }
     } catch (error) {
       alert(error.error);
     }
@@ -59,35 +62,14 @@ const NoteModal = ({
         ({ id, note_type }) => note_type == noteType
       )
     );
-
-    setInitValues(prev => ({
-      ...prev,
-      note_type: noteType
-    }));
   }, [noteType]);
-
-  useEffect(() => {
-    setInitValues(prev => ({
-      ...prev,
-      note_section: noteSections?.[0]?.id
-    }));
-  }, [noteSections]);
-
-  useEffect(() => {
-    if (user) {
-      setInitValues(prev => ({
-        ...prev,
-        owner: user.id
-      }));
-    }
-  }, [user]);
 
   return (
     <View style={styles.container}>
       <Modal animationType='slide' transparent={true} visible={modalVisible}>
         <Formik
           initialValues={initValues}
-          onSubmit={handleSubmit}
+          onSubmit={values => handleSubmit(values)}
           validationSchema={schema}>
           {({
             handleChange,
@@ -136,7 +118,7 @@ const NoteModal = ({
                   </View>
                   <ActionButton
                     text={'Save'}
-                    onPress={() => handleSubmit(values)}
+                    onPress={handleSubmit}
                     isLoading={isSubmitting}
                   />
                 </View>
