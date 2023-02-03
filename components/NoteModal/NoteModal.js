@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Modal, TextInput, Button } from 'react-native';
+import { View, StyleSheet, Modal, TextInput } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
-import { Picker } from '@react-native-picker/picker';
-import { Formik, Form, ErrorMessage } from 'formik';
-import { useSelector } from 'react-redux';
+import { Formik } from 'formik';
 
 import ActionButton from '../ActionButton';
 import Select from '../Select';
 import AppStyles from '../../AppStyles';
-import { useAddNoteMutation } from '../../store/notes/notesAPI';
+import {
+  useAddNoteMutation,
+  useSetNoteMutation
+} from '../../store/notes/notesAPI';
 
 import schema from './validationSchema';
 
@@ -17,18 +18,15 @@ const NoteModal = ({
   modalVisible,
   setModalVisible,
   resources,
-  noteType
+  currentNote,
+  user
 }) => {
-  const user = useSelector(state => state.userState.user);
-
-  const initValues = {
-    owner: user?.id || '',
-    note_type: noteType,
-    note_section: 0,
-    money: 0,
-    currency: Object.values(resources.currency)[0].code
-  };
-  const [addNote, { isLoading, error, data: newNote }] = useAddNoteMutation();
+  const [addNote, { isLoading: isLoadingAdd, error: errorAdd, data: newNote }] =
+    useAddNoteMutation();
+  const [
+    setNote,
+    { isLoading: isLoadingSet, error: errorSet, data: settedNote }
+  ] = useSetNoteMutation();
 
   const normalizeMoneyValue = value => {
     let normalizedValue;
@@ -39,14 +37,20 @@ const NoteModal = ({
 
   const [noteSections, setNoteSections] = useState(
     Object.values(resources.note_sections).filter(
-      ({ id, note_type }) => note_type == noteType
+      ({ note_type }) => note_type == currentNote.note_type
     )
   );
 
   const handleSubmit = async values => {
     console.log(values);
     try {
-      const res = await addNote({ token: user.token, note: values }).unwrap();
+      let res;
+
+      if (!!values?.id) {
+        res = await setNote({ token: user.token, note: values }).unwrap();
+      } else {
+        res = await addNote({ token: user.token, note: values }).unwrap();
+      }
 
       if (res.status === 'success') {
         setModalVisible(false);
@@ -59,26 +63,19 @@ const NoteModal = ({
   useEffect(() => {
     setNoteSections(
       Object.values(resources.note_sections).filter(
-        ({ id, note_type }) => note_type == noteType
+        ({ note_type }) => note_type == currentNote.note_type
       )
     );
-  }, [noteType]);
+  }, [currentNote]);
 
   return (
     <View style={styles.container}>
       <Modal animationType='slide' transparent={true} visible={modalVisible}>
         <Formik
-          initialValues={initValues}
+          initialValues={currentNote}
           onSubmit={values => handleSubmit(values)}
           validationSchema={schema}>
-          {({
-            handleChange,
-            handleSubmit,
-            values,
-            setFieldValue,
-            isSubmitting,
-            ...rest
-          }) => {
+          {({ handleSubmit, values, setFieldValue, isSubmitting }) => {
             return (
               <View style={styles.modal}>
                 <View>
@@ -89,39 +86,38 @@ const NoteModal = ({
                     selectName={'note_sections'}
                   />
                 </View>
-                <View>
-                  <View style={styles.input}>
-                    <TextInput
-                      keyboardType='numeric'
-                      onChangeText={value =>
-                        setFieldValue('money', normalizeMoneyValue(value))
-                      }
-                      value={String(values.money)}
+                <View style={styles.currencyWrapper}>
+                  <View style={styles.money}>
+                    <View style={styles.input}>
+                      <TextInput
+                        keyboardType='numeric'
+                        onChangeText={value =>
+                          setFieldValue('money', normalizeMoneyValue(value))
+                        }
+                        value={String(values.money)}
+                      />
+                    </View>
+                  </View>
+                  <View style={styles.currency}>
+                    <Select
+                      items={Object.values(resources.currency).map(
+                        ({ code, symbol, name }) => ({
+                          name: `${symbol} (${name})`,
+                          id: code
+                        })
+                      )}
+                      style={styles.currencySelect}
+                      currentItem={values.currency}
+                      setValue={value => setFieldValue('currency', value)}
+                      selectName={'note_sections'}
                     />
                   </View>
-                  <View style={styles.input}>
-                    <Picker
-                      selectedValue={values.currency}
-                      onValueChange={(itemValue, itemIndex) =>
-                        setFieldValue('currency', itemValue)
-                      }>
-                      {Object.values(resources.currency).map(
-                        ({ code, symbol, name }) => (
-                          <Picker.Item
-                            key={code}
-                            label={`${symbol} (${name})`}
-                            value={code}
-                          />
-                        )
-                      )}
-                    </Picker>
-                  </View>
-                  <ActionButton
-                    text={'Save'}
-                    onPress={handleSubmit}
-                    isLoading={isSubmitting}
-                  />
                 </View>
+                <ActionButton
+                  text={'Save'}
+                  onPress={handleSubmit}
+                  isLoading={isSubmitting}
+                />
 
                 <AntDesign
                   onPress={() => setModalVisible(false)}
@@ -141,7 +137,7 @@ const NoteModal = ({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -160,6 +156,26 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     backgroundColor: AppStyles.palette.white
+  },
+  currencyWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  money: {
+    minWidth: '55%'
+  },
+  currency: {
+    width: '40%'
+  },
+  currencySelect: {
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    fontSize: 40,
+    borderWidth: 0,
+    borderRadius: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: AppStyles.palette.powderBlue
   },
   arrow: {
     textAlign: 'center'

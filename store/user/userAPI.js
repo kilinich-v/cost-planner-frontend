@@ -3,7 +3,7 @@ import { setUser, setToken } from './userSlice';
 
 export const userAPI = createApi({
   reducerPath: 'userAPI',
-  baseQuery: fetchBaseQuery({ baseUrl: `http://192.168.0.103:8080/user` }),
+  baseQuery: fetchBaseQuery({ baseUrl: `http://10.0.4.138:8080/user` }),
   tagTypes: ['User'],
   endpoints: builder => ({
     currentUser: builder.mutation({

@@ -3,9 +3,9 @@ import { Picker } from '@react-native-picker/picker';
 
 import AppStyles from '../../AppStyles';
 
-const Select = ({ items, setValue, currentItem, selectName }) => {
+const Select = ({ items, setValue, currentItem, selectName, style }) => {
   return (
-    <View style={styles.select}>
+    <View style={style ? style : defaultStyles.select}>
       <Picker
         selectedValue={currentItem}
         onValueChange={(itemValue, itemIndex) => setValue(itemValue)}>
@@ -19,7 +19,7 @@ const Select = ({ items, setValue, currentItem, selectName }) => {
 
 export default Select;
 
-const styles = StyleSheet.create({
+const defaultStyles = StyleSheet.create({
   select: {
     borderWidth: 1,
     borderColor: AppStyles.palette.powderBlue,
